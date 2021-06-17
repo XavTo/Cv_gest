@@ -20,11 +20,13 @@ def init_window():
 
 def create_text():
     label_text = Label(window, text="Entreprise", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=0, ipadx=115)
+    label_text.grid(row=0, column=0, ipadx=40)
+    label_text = Label(window, text="Speciality", font=("Arial, 20"), bg='#5eb7ba', fg='white')
+    label_text.grid(row=0, column=1, ipadx=40)
     label_text = Label(window, text="Date", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=1, ipadx=115)
+    label_text.grid(row=0, column=2, ipadx=40)
     label_text = Label(window, text="Commentaire", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=2, ipadx=115)
+    label_text.grid(row=0, column=3, ipadx=180)
 
 def display_info(info):
     i = 1
@@ -35,6 +37,8 @@ def display_info(info):
         label_text.grid(row=i, column=1)
         label_text = Label(window, text=element[2], font=("Arial, 15"), bg='#ffea19', fg='black')
         label_text.grid(row=i, column=2)
+        label_text = Label(window, text=element[3], font=("Arial, 15"), bg='#ffea19', fg='black')
+        label_text.grid(row=i, column=3)
         i += 1
 
 def my_create_thing():

@@ -33,10 +33,10 @@ def copy_str(str):
 
 def display_all_info(info):
     for element in info:
-        print(element[0], element[1], element[2])
+        print(element[0], element[1], element[2], element[3])
 
 def my_void():
-    stock = ["", "", ""]
+    stock = ["", "", "", ""]
     return stock
 
 def my_parser(str):
@@ -48,12 +48,14 @@ def my_parser(str):
         if my_strncmp(str, "id") == 0:
             info.append(my_void())
             compt += 1
-        if my_strncmp(str, "company") == 0:
+        if my_strncmp(str, "Company") == 0:
             info[compt][0] = recup_from_parser(str)
-        if my_strncmp(str, "date") == 0:
+        if my_strncmp(str, "Speciality") == 0:
             info[compt][1] = recup_from_parser(str)
-        if my_strncmp(str, "reply") == 0:
+        if my_strncmp(str, "Date") == 0:
             info[compt][2] = recup_from_parser(str)
+        if my_strncmp(str, "Reply") == 0:
+            info[compt][3] = recup_from_parser(str)
         i = i + 1
         str = copy_str(str)
     return info

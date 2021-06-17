@@ -1,14 +1,16 @@
 [
     {
         "id": 1,
-        "company": "Subteno IT",
-        "date": "15/07/2021",
-        "reply": "no"
+        "Company": "Subteno IT",
+        "Speciality": "Logiciel dev",
+        "Date": "15/07/2021",
+        "Reply": "no pas de reponses c relou de ouf"
     },
     {
         "id": 2,
-        "company": "Other",
-        "date": "22/22/2021",
-        "reply": "yes"
+        "Company": "Other",
+        "Speciality": "Logiciel dev",
+        "Date": "22/22/2021",
+        "Reply": "yes"
     }
 ]
