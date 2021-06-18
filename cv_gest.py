@@ -2,6 +2,7 @@ import sys
 import my_parser as p
 import my_write as w
 from tkinter import *
+from functools import partial
 
 def get_info():
     fd = open("info.json")
@@ -21,10 +22,15 @@ def init_window():
     return window
 
 def add_menu(info):
+    i = 0
     mymenu = Menu(window)
     ong_menu = Menu(mymenu, tearoff=0)
+    del_menu = Menu(mymenu, tearoff=0)
+    for element in info:
+        del_menu.add_command(label=element[0], command=partial(my_delete_thing, info, i))
+        i += 1
     ong_menu.add_command(label="Ajouter", command=lambda: my_create_thing(info))
-    ong_menu.add_command(label="Supprimer", command=None)
+    ong_menu.add_cascade(label="Supprimer", menu=del_menu)
     ong_menu.add_command(label="Quitter", command=window.quit)
     mymenu.add_cascade(label="Menu", menu=ong_menu)
     window.config(menu=mymenu)
@@ -71,6 +77,7 @@ def recup_entry_rep(rep_entry, my_but, info, old_info):
     w.write_info(old_info)
     info = get_info()
     display_info(info)
+    add_menu(info)
     return None
 
 def recup_entry_date(date_entry, my_but, info, old_info):
@@ -110,7 +117,6 @@ def recup_entry_com(company_entry, my_but, info, old_info):
     return None
 
 def my_create_thing(info):
-    event = None
     save_info = ["", "", "", ""]
     company_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
     company_entry.grid()
@@ -118,6 +124,16 @@ def my_create_thing(info):
     my_but.grid()
     window.bind("<Return>", lambda event: valid_wh_ret(event, 0, company_entry, my_but, save_info, info))
     return None
+
+def my_delete_thing(info, i):
+    del info[i]
+    w.write_info(info)
+    for rem in window.winfo_children():
+        rem.destroy()
+    create_text()
+    info = get_info()
+    display_info(info)
+    add_menu(info)
 
 info = get_info()
 window = init_window()
