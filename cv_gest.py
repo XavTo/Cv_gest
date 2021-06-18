@@ -1,5 +1,6 @@
 import sys
 import my_parser as p
+import my_write as w
 from tkinter import *
 
 def get_info():
@@ -15,8 +16,18 @@ def init_window():
     window.geometry("1080x720")
     window.minsize(1080, 720)
     window.maxsize(1080, 720)
+    window.iconbitmap('@logo.xbm')
     window.config(background='#a2fcff')
     return window
+
+def add_menu(info):
+    mymenu = Menu(window)
+    ong_menu = Menu(mymenu, tearoff=0)
+    ong_menu.add_command(label="Ajouter", command=lambda: my_create_thing(info))
+    ong_menu.add_command(label="Supprimer", command=None)
+    ong_menu.add_command(label="Quitter", command=window.quit)
+    mymenu.add_cascade(label="Menu", menu=ong_menu)
+    window.config(menu=mymenu)
 
 def create_text():
     label_text = Label(window, text="Entreprise", font=("Arial, 20"), bg='#5eb7ba', fg='white')
@@ -41,13 +52,76 @@ def display_info(info):
         label_text.grid(row=i, column=3)
         i += 1
 
-def my_create_thing():
-    print("press")
+def valid_wh_ret(event, wh_fonc, entry, my_but, save_info, info):
+    if (wh_fonc == 0):
+        recup_entry_com(entry, my_but, save_info, info)
+    if (wh_fonc == 1):
+        recup_entry_spe(entry, my_but, save_info, info)
+    if (wh_fonc == 2):
+        recup_entry_date(entry, my_but, save_info, info)
+    if (wh_fonc == 3):
+        recup_entry_rep(entry, my_but, save_info, info)
+
+def recup_entry_rep(rep_entry, my_but, info, old_info):
+    window.unbind("<Return>")
+    info[3] = rep_entry.get()
+    my_but.grid_forget()
+    rep_entry.grid_forget()
+    old_info.append(info)
+    w.write_info(old_info)
+    info = get_info()
+    display_info(info)
+    return None
+
+def recup_entry_date(date_entry, my_but, info, old_info):
+    window.unbind("<Return>")
+    info[2] = date_entry.get()
+    my_but.grid_forget()
+    date_entry.grid_forget()
+    rep_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    rep_entry.grid(column=3)
+    my_but = Button(window, text="Valid", command=lambda: recup_entry_rep(rep_entry, my_but, info, old_info))
+    window.bind("<Return>", lambda event: valid_wh_ret(event, 3, rep_entry, my_but, info, old_info))
+    my_but.grid(column=3)
+    return None
+
+def recup_entry_spe(spe_entry, my_but, info, old_info):
+    window.unbind("<Return>")
+    info[1] = spe_entry.get()
+    my_but.grid_forget()
+    spe_entry.grid_forget()
+    date_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    date_entry.grid(column=2)
+    my_but = Button(window, text="Valid", command=lambda: recup_entry_date(date_entry, my_but, info, old_info))
+    window.bind("<Return>", lambda event: valid_wh_ret(event, 2, date_entry, my_but, info, old_info))
+    my_but.grid(column=2)
+    return None
+
+def recup_entry_com(company_entry, my_but, info, old_info):
+    window.unbind("<Return>")
+    info[0] = company_entry.get()
+    spe_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    spe_entry.grid(column=1)
+    my_but.grid_forget()
+    company_entry.grid_forget()
+    my_but = Button(window, text="Valid", command=lambda: recup_entry_spe(spe_entry, my_but, info, old_info))
+    window.bind("<Return>", lambda event: valid_wh_ret(event, 1, spe_entry, my_but, info, old_info))
+    my_but.grid(column=1)
+    return None
+
+def my_create_thing(info):
+    event = None
+    save_info = ["", "", "", ""]
+    company_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    company_entry.grid()
+    my_but = Button(window, text="Valid", command=lambda: recup_entry_com(company_entry, my_but, save_info, info))
+    my_but.grid()
+    window.bind("<Return>", lambda event: valid_wh_ret(event, 0, company_entry, my_but, save_info, info))
+    return None
 
 info = get_info()
 window = init_window()
 create_text()
 display_info(info)
-cr_button = Button(window, text="create new cv", font=("Arial, 20"), bg='white', fg='#5eb7ba', command=my_create_thing)
-cr_button.grid()
+add_menu(info)
 window.mainloop()
