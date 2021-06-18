@@ -15,8 +15,7 @@ def init_window():
     window = Tk()
     window.title("CV GEST")
     window.geometry("1080x720")
-    window.minsize(1080, 720)
-    window.maxsize(1080, 720)
+    window.minsize(800, 400)
     window.iconbitmap('@logo.xbm')
     window.config(background='#a2fcff')
     return window
@@ -36,14 +35,15 @@ def add_menu(info):
     window.config(menu=mymenu)
 
 def create_text():
+    window.grid_columnconfigure((0,1,2,3), minsize=50, weight=1)
     label_text = Label(window, text="Entreprise", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=0, ipadx=40)
+    label_text.grid(row=0, column=0)
     label_text = Label(window, text="Speciality", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=1, ipadx=40)
+    label_text.grid(row=0, column=1)
     label_text = Label(window, text="Date", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=2, ipadx=40)
+    label_text.grid(row=0, column=2)
     label_text = Label(window, text="Commentaire", font=("Arial, 20"), bg='#5eb7ba', fg='white')
-    label_text.grid(row=0, column=3, ipadx=180)
+    label_text.grid(row=0, column=3)
 
 def display_info(info):
     i = 1
