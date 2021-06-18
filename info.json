@@ -2,15 +2,8 @@
 	{
 		"id": 1,
 		"Company": "Subteno IT",
-		"Speciality": "Logiciel dev",
-		"Date": "15/07/2021",
-		"Reply": "no pas de reponses c relou de ouf"
-	},
-	{
-		"id": 2,
-		"Company": "Aznetwork",
-		"Speciality": "Logiciel Web",
-		"Date": "18/06/2021",
-		"Reply": "pas encore"
+		"Speciality": "Logiciel",
+		"Date": "18/06/21",
+		"Reply": "Pas de réponse"
 	}
 ]

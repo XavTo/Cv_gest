@@ -2,7 +2,14 @@ import sys
 import my_parser as p
 import my_write as w
 from tkinter import *
+from tkinter import ttk
 from functools import partial
+
+def light_blue():
+    return '#a2fcff'
+
+def dark_blue():
+    return '#5eb7ba'
 
 def get_info():
     fd = open("info.json")
@@ -17,7 +24,7 @@ def init_window():
     window.geometry("1080x720")
     window.minsize(800, 400)
     window.iconbitmap('@logo.xbm')
-    window.config(background='#a2fcff')
+    window.config(background=light_blue())
     return window
 
 def add_menu(info):
@@ -36,25 +43,25 @@ def add_menu(info):
 
 def create_text():
     window.grid_columnconfigure((0,1,2,3), minsize=50, weight=1)
-    label_text = Label(window, text="Entreprise", font=("Arial, 20"), bg='#5eb7ba', fg='white')
+    label_text = Label(window, text="Entreprise", font=("Arial, 20"), bg=dark_blue(), fg='white')
     label_text.grid(row=0, column=0)
-    label_text = Label(window, text="Speciality", font=("Arial, 20"), bg='#5eb7ba', fg='white')
+    label_text = Label(window, text="Speciality", font=("Arial, 20"), bg=dark_blue(), fg='white')
     label_text.grid(row=0, column=1)
-    label_text = Label(window, text="Date", font=("Arial, 20"), bg='#5eb7ba', fg='white')
+    label_text = Label(window, text="Date", font=("Arial, 20"), bg=dark_blue(), fg='white')
     label_text.grid(row=0, column=2)
-    label_text = Label(window, text="Commentaire", font=("Arial, 20"), bg='#5eb7ba', fg='white')
+    label_text = Label(window, text="Commentaire", font=("Arial, 20"), bg=dark_blue(), fg='white')
     label_text.grid(row=0, column=3)
 
 def display_info(info):
     i = 1
     for element in info:
-        label_text = Label(window, text=element[0], font=("Arial, 15"), bg='#ffea19', fg='black')
+        label_text = Label(window, text=element[0], font=("Arial, 15"), bg=light_blue(), fg='black')
         label_text.grid(row=i, column=0)
-        label_text = Label(window, text=element[1], font=("Arial, 15"), bg='#ffea19', fg='black')
+        label_text = Label(window, text=element[1], font=("Arial, 15"), bg=light_blue(), fg='black')
         label_text.grid(row=i, column=1)
-        label_text = Label(window, text=element[2], font=("Arial, 15"), bg='#ffea19', fg='black')
+        label_text = Label(window, text=element[2], font=("Arial, 15"), bg=light_blue(), fg='black')
         label_text.grid(row=i, column=2)
-        label_text = Label(window, text=element[3], font=("Arial, 15"), bg='#ffea19', fg='black')
+        label_text = Label(window, text=element[3], font=("Arial, 15"), bg=light_blue(), fg='black')
         label_text.grid(row=i, column=3)
         i += 1
 
@@ -69,6 +76,9 @@ def valid_wh_ret(event, wh_fonc, entry, my_but, save_info, info):
         recup_entry_rep(entry, my_but, save_info, info)
 
 def recup_entry_rep(rep_entry, my_but, info, old_info):
+    global already_activ
+    if (len(rep_entry.get()) == 0):
+        return None
     window.unbind("<Return>")
     info[3] = rep_entry.get()
     my_but.grid_forget()
@@ -78,14 +88,19 @@ def recup_entry_rep(rep_entry, my_but, info, old_info):
     info = get_info()
     display_info(info)
     add_menu(info)
+    already_activ = 0
     return None
 
 def recup_entry_date(date_entry, my_but, info, old_info):
+    if (len(date_entry.get()) == 0):
+        return None
+    if (w.check_if_valid(date_entry.get()) == 1):
+        return None
     window.unbind("<Return>")
     info[2] = date_entry.get()
     my_but.grid_forget()
     date_entry.grid_forget()
-    rep_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    rep_entry = Entry(window, font=("Arial"), bg=dark_blue(), fg='Black')
     rep_entry.grid(column=3)
     my_but = Button(window, text="Valid", command=lambda: recup_entry_rep(rep_entry, my_but, info, old_info))
     window.bind("<Return>", lambda event: valid_wh_ret(event, 3, rep_entry, my_but, info, old_info))
@@ -93,11 +108,13 @@ def recup_entry_date(date_entry, my_but, info, old_info):
     return None
 
 def recup_entry_spe(spe_entry, my_but, info, old_info):
+    if (len(spe_entry.get()) == 0):
+        return None
     window.unbind("<Return>")
     info[1] = spe_entry.get()
     my_but.grid_forget()
     spe_entry.grid_forget()
-    date_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    date_entry = Entry(window, font=("Arial"), bg=dark_blue(), fg='Black')
     date_entry.grid(column=2)
     my_but = Button(window, text="Valid", command=lambda: recup_entry_date(date_entry, my_but, info, old_info))
     window.bind("<Return>", lambda event: valid_wh_ret(event, 2, date_entry, my_but, info, old_info))
@@ -105,24 +122,31 @@ def recup_entry_spe(spe_entry, my_but, info, old_info):
     return None
 
 def recup_entry_com(company_entry, my_but, info, old_info):
-    window.unbind("<Return>")
+    global already_activ
+    if (len(company_entry.get()) == 0):
+        return None
     info[0] = company_entry.get()
-    spe_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
-    spe_entry.grid(column=1)
+    window.unbind("<Return>")
     my_but.grid_forget()
     company_entry.grid_forget()
+    spe_entry = Entry(window, font=("Arial"), bg=dark_blue(), fg='Black')
+    spe_entry.grid(column=1)
     my_but = Button(window, text="Valid", command=lambda: recup_entry_spe(spe_entry, my_but, info, old_info))
     window.bind("<Return>", lambda event: valid_wh_ret(event, 1, spe_entry, my_but, info, old_info))
     my_but.grid(column=1)
     return None
 
 def my_create_thing(info):
+    global already_activ
+    if (already_activ == 1):
+        return None
     save_info = ["", "", "", ""]
-    company_entry = Entry(window, font=("Arial"), bg='#ffea19', fg='Red')
+    company_entry = Entry(window, font=("Arial"), bg=dark_blue(), fg='Black')
     company_entry.grid()
     my_but = Button(window, text="Valid", command=lambda: recup_entry_com(company_entry, my_but, save_info, info))
     my_but.grid()
     window.bind("<Return>", lambda event: valid_wh_ret(event, 0, company_entry, my_but, save_info, info))
+    already_activ = 1
     return None
 
 def my_delete_thing(info, i):
@@ -135,6 +159,7 @@ def my_delete_thing(info, i):
     display_info(info)
     add_menu(info)
 
+already_activ = 0
 info = get_info()
 window = init_window()
 create_text()
