@@ -1,6 +1,7 @@
 import sys
-import my_parser as p
-import my_write as w
+import my_add as add
+import my_parser as par
+import my_write as wrt
 from tkinter import *
 from tkinter import ttk
 from functools import partial
@@ -33,18 +34,32 @@ class MyApp:
         fd = open("info.json")
         ret = fd.read()
         fd.close
-        info = p.my_parser(ret)
+        info = par.my_parser(ret)
         return info
 
     def add_menu(self, info):
         i = 0
+        a = 0
+        e = 0
+        list_name = ["Name", "Speciality", "Date", "Commentaire"]
         mymenu = Menu(self.window)
         ong_menu = Menu(mymenu, tearoff=0)
         del_menu = Menu(mymenu, tearoff=0)
+        mod_menu = Menu(mymenu, tearoff=0)
         for element in info:
             del_menu.add_command(label=element[0], command=partial(self.my_delete_thing, info, i))
             i += 1
+        for element in info:
+            change_mod_menu = Menu(mymenu, tearoff=0)
+            for thing in list_name:
+                change_mod_menu.add_command(label=thing, command=partial(self.my_change_thing, info, a, e))
+                e += 1
+            mod_menu.add_cascade(label=element[0], menu=change_mod_menu)
+            change_mod_menu.forget()
+            e = 0
+            a += 1
         ong_menu.add_command(label="Ajouter", command=lambda: self.my_create_thing(info))
+        ong_menu.add_cascade(label="Modifier", menu=mod_menu)
         ong_menu.add_cascade(label="Supprimer", menu=del_menu)
         ong_menu.add_command(label="Quitter", command=self.frame.quit)
         mymenu.add_cascade(label="Menu", menu=ong_menu)
@@ -83,6 +98,7 @@ class MyApp:
             self.recup_entry_date(entry, my_but, save_info, info)
         if (wh_fonc == 3):
             self.recup_entry_rep(entry, my_but, save_info, info)
+        self.add_menu(info)
 
     def recup_entry_rep(self, rep_entry, my_but, info, old_info):
         if (len(rep_entry.get()) == 0):
@@ -92,7 +108,7 @@ class MyApp:
         my_but.grid_forget()
         rep_entry.grid_forget()
         old_info.append(info)
-        w.write_info(old_info)
+        wrt.write_info(old_info)
         info = self.get_info()
         self.display_info(info)
         self.add_menu(info)
@@ -102,7 +118,7 @@ class MyApp:
     def recup_entry_date(self, date_entry, my_but, info, old_info):
         if (len(date_entry.get()) == 0):
             return None
-        if (w.check_if_valid(date_entry.get()) == 1):
+        if (wrt.check_if_valid(date_entry.get()) == 1):
             return None
         self.window.unbind("<Return>")
         info[2] = date_entry.get()
@@ -157,13 +173,38 @@ class MyApp:
 
     def my_delete_thing(self, info, i):
         del info[i]
-        w.write_info(info)
+        wrt.write_info(info)
         for rem in self.frame.winfo_children():
             rem.destroy()
         self.create_text()
         info = self.get_info()
         self.display_info(info)
         self.add_menu(info)
+
+    def change_entry(self, rep_entry, my_but, info, a, e):
+        if (len(rep_entry.get()) == 0):
+            return None
+        self.window.unbind("<Return>")
+        info[a][e] = rep_entry.get()
+        for widgets in self.frame.winfo_children():
+            widgets.destroy()
+        wrt.write_info(info)
+        self.create_text()
+        info = self.get_info()
+        self.display_info(info)
+        self.add_menu(info)
+        self.already_activ = 0
+        return None
+
+    def change_wh_ret(self, event, rep_entry, my_but, info, a, e):
+        self.change_entry(rep_entry, my_but, info, a, e)
+        self.add_menu(info)
+
+    def my_change_thing(self, info, a, e):
+        rep_entry = Entry(self.frame, font=("Arial"), bg=self.dark_blue(), fg='Black')
+        rep_entry.grid(row=a + 1, column=e)
+        my_but = Button(self.frame, text="Valid", command=lambda: self.change_entry(rep_entry, my_but, info, a, e))
+        self.window.bind("<Return>", lambda event: self.change_wh_ret(event, rep_entry, my_but, info, a, e))
 
 app = MyApp()
 app.window.mainloop()
